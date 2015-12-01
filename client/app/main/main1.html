@@ -1,0 +1,99 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <table class="table-nested">
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th class="cell-members">Members</th>
+          <th>Products</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody ng-class="{opened: item.opened}" ng-include="'table_tree.html'"
+               ng-repeat="item in awesomeThings"></tbody>
+      </table>
+      <script id="table_tree.html" type="text/ng-template">
+        <tr ng-class="{parent: item.children}"
+            ng-init="parentScope = $parent.$parent; initCheckbox(item, parentScope.item)">
+          <td class="cell-name" ng-click="item.opened = !item.opened">
+            <div class="indent" style="padding-left: {{15*level+'px'}}">
+            </div>
+            {{item.name}}
+          </td>
+          <td class="cell-members">{{item.children.length}}</td>
+          <td>
+            <a ng-show="!item.children" ng-click="getProducts(item)" class="btn btn-link">Show Products</a>
+          </td>
+          <td>
+            <button type="button" class="close" ng-click="deleteThing(parentScope.item,item)">&times;</button>
+          </td>
+
+        </tr>
+        <tr class="children" ng-if="item.children && item.children.length > 0">
+          <td colspan="4">
+            <table>
+              <tbody ng-class="{opened: item.opened}" ng-include="'table_tree.html'" ng-init="level = level + 1"
+                     ng-repeat="item in item.children"></tbody>
+            </table>
+          </td>
+        </tr>
+      </script>
+    </div>
+  </div>
+
+  <div>
+    <script type="text/ng-template" id="myModalContent.html">
+      <div class="modal-header">
+        <table style="width:100%">
+          <tbody>
+          <th style="width:70%">
+            <h3 class="modal-title">Products</h3>
+          </th>
+          <th>
+            <h3 ng-show="!!nextUrl">
+              <button ng-click="previous()" class="btn btn-link">Previous</button>
+            </h3>
+          </th>
+          <th>
+            <h3 ng-show="!!nextUrl">
+              <button ng-click="next()" class="btn btn-link">Next</button>
+            </h3>
+          </th>
+          </tbody>
+        </table>
+
+
+      </div>
+      <div class="modal-body">
+        <table class="table table-striped table-bordered">
+          <tbody>
+          <tr ng-repeat="item in items">
+            <td>
+              <div>
+                <img src="{{item.thumbnailImage}}">
+                <p>{{item.upc}}</p>
+              </div>
+            </td>
+            <td><p>{{item.name}}</p></td>
+            <!--<td style="width: 50%"></td>-->
+            <td> <a target="_blank" href="http://api.walmartlabs.com/v1/items/{{item.itemId}}?format=json&apiKey=2m8deby4zfjte77t73e44r2v">Object</a>
+              <json-formatter open="1" json="item.attributes"></json-formatter>
+              <p>Brand : {{item.brandName}}</p>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+      </div>
+    </script>
+  </div>
+
+</div>
+
+
+
