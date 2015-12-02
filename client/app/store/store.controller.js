@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('productsSelectionApp')
-  .controller('MainCtrl', function ($scope, $http, socket, $filter, $uibModal) {
+  .controller('StoreCtrl1', function ($scope, $http, socket, $filter, $uibModal) {
 
 
 
