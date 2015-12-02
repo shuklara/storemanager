@@ -3,9 +3,9 @@
 angular.module('productsSelectionApp')
   .config(function ($stateProvider) {
     $stateProvider
-      .state('main', {
-        url: '/',
-        templateUrl: 'app/main/main.html',
-        controller: 'MainCtrl'
+      .state('store', {
+        url: '/store/:id',
+        templateUrl: 'app/store/store.create.html',
+        controller: 'StoreCtrl'
       });
   });

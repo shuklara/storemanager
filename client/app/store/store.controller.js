@@ -1,26 +1,25 @@
 'use strict';
 
 angular.module('productsSelectionApp')
-  .controller('StoreCtrl1', function ($scope, $http, socket, $filter, $uibModal) {
+  .controller('StoreCtrl', function ($scope, $http, socket, $filter, $uibModal, $stateParams) {
 
+    $scope.loading = true;
 
-
+    $http.get('/api/stores/' + $stateParams.id).success(function (store) {
+      $scope.store = store;
+    });
     $scope.awesomeThings = [];
-
     $http.get('/assets/categories.json').success(function (awesomeThings) {
       $scope.awesomeThings = awesomeThings.categories;
-      //socket.syncUpdates('thing', $scope.awesomeThings);
+      $scope.loading = false;
     });
 
-    $scope.addThing = function () {
-      if ($scope.newThing === '') {
-        return;
-      }
-      $http.post('/api/things', {name: $scope.newThing});
-      $scope.newThing = '';
+    $scope.updateStore = function (store) {
+      $http.put('/api/stores/'+store._id, store);
     };
 
     $scope.getProducts = function (cat) {
+      $scope.fetchingProduct = true;
       var url = 'api/things/products/' + cat.id;
       $http.get(url).success(function (result) {
         if (!cat.products) {
@@ -29,6 +28,8 @@ angular.module('productsSelectionApp')
           cat.products.concat(result.items)
         }
         open(result.items, result.nextPage);
+        $scope.fetchingProduct = false;
+
       })
     };
 
@@ -49,21 +50,9 @@ angular.module('productsSelectionApp')
       socket.unsyncUpdates('thing');
     });
 
-    $scope.toggleAllCheckboxes = function ($event) {
-    };
     $scope.initCheckbox = function (item, parentItem) {
       return item.selected = parentItem && parentItem.selected || item.selected || false;
     };
-    $scope.toggleCheckbox = function (item, parentScope) {
-      if (item.children != null) {
-        $scope.$broadcast('changeChildren', item);
-      }
-      if (parentScope.item != null) {
-        return $scope.$emit('changeParent', parentScope);
-      }
-    };
-    $scope.$on('changeChildren', function (event, parentItem) {
-    });
 
 
     function open(products, nextPage) {
@@ -78,12 +67,23 @@ angular.module('productsSelectionApp')
           },
           nextUrl: function () {
             return nextPage;
+          },
+          store : function(){
+            return $scope.store;
           }
         }
       });
 
-      modalInstance.result.then(function (selectedItem) {
-        $scope.selected = selectedItem;
+      modalInstance.result.then(function (selectedItems) {
+        if (!$scope.store.products) {
+          $scope.store.products =[] ;
+        }
+
+        for (var key in selectedItems) {
+          $scope.store.products.push(selectedItems[key]);
+        }
+        $scope.updateStore($scope.store);
+
       }, function () {
         $log.info('Modal dismissed at: ' + new Date());
       });
@@ -97,15 +97,12 @@ angular.module('productsSelectionApp')
 ;
 
 
-angular.module('productsSelectionApp').controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, items, nextUrl) {
+angular.module('productsSelectionApp').controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, items, nextUrl,store) {
   $scope.nextUrl = nextUrl;
   var itemsArray = [];
   $scope.items = items;
   itemsArray.push($scope.items);
-  $scope.selected = {
-    item: $scope.items[0]
-  };
-
+  $scope.selectedProducts = {};
   $scope.loadMore = function () {
     var currIndex = itemsArray.indexOf($scope.items);
     if (currIndex < itemsArray.length - 1) {
@@ -122,10 +119,21 @@ angular.module('productsSelectionApp').controller('ModalInstanceCtrl', function 
 
   };
   $scope.ok = function () {
-    $uibModalInstance.close($scope.selected.item);
+    $uibModalInstance.close($scope.selectedProducts);
   };
 
   $scope.cancel = function () {
     $uibModalInstance.dismiss('cancel');
+  };
+
+
+  $scope.addProduct = function (p) {
+    $scope.selectedProducts[p.upc] = p;
+  };
+  $scope.removeProduct = function (p) {
+    delete $scope.selectedProducts[p.upc];
+  };
+  $scope.isProductAdded = function (p) {
+    return $scope.selectedProducts[p.upc];
   };
 });

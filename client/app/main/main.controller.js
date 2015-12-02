@@ -1,27 +1,33 @@
 'use strict';
 
 angular.module('productsSelectionApp')
-  .controller('MainCtrl', function ($scope, $http, socket) {
-    $scope.awesomeThings = [];
+  .controller('MainCtrl', function ($scope, $http, socket,$state) {
+    $scope.stores = [];
 
-    $http.get('/api/things').success(function(awesomeThings) {
-      $scope.awesomeThings = awesomeThings;
-      socket.syncUpdates('thing', $scope.awesomeThings);
+    $http.get('/api/stores').success(function(stores) {
+      $scope.stores = stores;
+      socket.syncUpdates('store', $scope.stores);
     });
 
-    $scope.addThing = function() {
-      if($scope.newThing === '') {
+    $scope.create = function() {
+      if($scope.newStore === '') {
         return;
       }
-      $http.post('/api/things', { name: $scope.newThing });
-      $scope.newThing = '';
+      $http.post('/api/stores', { name: $scope.newStore }).success(function(store){
+        $state.go('store',{id:store._id});
+      });
+      $scope.newStore = '';
     };
 
-    $scope.deleteThing = function(thing) {
-      $http.delete('/api/things/' + thing._id);
+    $scope.update=function(store){
+      $state.go('store',{id:store._id});
+    };
+
+    $scope.delete = function(store) {
+      $http.delete('/api/stores/' + store._id);
     };
 
     $scope.$on('$destroy', function () {
-      socket.unsyncUpdates('thing');
+      socket.unsyncUpdates('store');
     });
   });

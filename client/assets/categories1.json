@@ -1,5 +1,6 @@
 {
-    "categories": [{
+    "categories": [
+      {
         "id": "91083",
         "name": "Auto & Tires",
         "path": "Auto & Tires",
@@ -318,7 +319,8 @@
                 "path": "Auto & Tires/Motor Oil &Transmission Fluids/Windshield Washer Fluid"
             }]
         }]
-    }, {
+    },
+      {
         "id": "5427",
         "name": "Baby",
         "path": "Baby",
@@ -1098,7 +1100,8 @@
             "name": "Value Bundles",
             "path": "Baby/Value Bundles"
         }]
-    }, {
+    },
+      {
         "id": "1085666",
         "name": "Beauty",
         "path": "Beauty",
@@ -1432,7 +1435,8 @@
                 "path": "Beauty/Skin Care/Sun Care"
             }]
         }]
-    }, {
+    },
+      {
         "id": "3920",
         "name": "Books",
         "path": "Books",
@@ -2832,7 +2836,8 @@
                 "path": "Books/Video Games Strategy Guides/General"
             }]
         }]
-    }, {
+    },
+      {
         "id": "1105910",
         "name": "Cell Phones",
         "path": "Cell Phones",
@@ -3090,7 +3095,8 @@
             "name": "Unlocked Phones",
             "path": "Cell Phones/Unlocked Phones"
         }]
-    }, {
+    },
+      {
         "id": "5438",
         "name": "Clothing",
         "path": "Clothing",
@@ -3910,7 +3916,8 @@
             "name": "Young Men's Styles",
             "path": "Clothing/Young Men's Styles"
         }]
-    }, {
+    },
+      {
         "id": "3944",
         "name": "Electronics",
         "path": "Electronics",
@@ -4601,7 +4608,8 @@
                 "path": "Electronics/TV & Video/TV DVD Combo"
             }]
         }]
-    }, {
+    },
+      {
         "id": "976759",
         "name": "Food",
         "path": "Food",
@@ -5253,7 +5261,8 @@
                 "path": "Food/Snacks, Cookies & Chips/Snack Cakes"
             }]
         }]
-    }, {
+    },
+      {
         "id": "1094765",
         "name": "Gifts & Registry",
         "path": "Gifts & Registry",
@@ -5354,7 +5363,8 @@
                 "path": "Gifts & Registry/Personalized Gifts/Personalized Toys & Games"
             }]
         }]
-    }, {
+    },
+      {
         "id": "976760",
         "name": "Health",
         "path": "Health",
@@ -5745,7 +5755,8 @@
                 "path": "Health/Walmart Vision Centers/Sunglasses"
             }]
         }]
-    }, {
+    },
+      {
         "id": "4044",
         "name": "Home",
         "path": "Home",
@@ -6409,7 +6420,8 @@
                 "path": "Home/Teen Rooms/Storage"
             }]
         }]
-    }, {
+    },
+      {
         "id": "1072864",
         "name": "Home Improvement",
         "path": "Home Improvement",
@@ -7345,7 +7357,8 @@
                 "path": "Home Improvement/Work Safety Clothing and Equipment/Women's Work & Safety Shoes"
             }]
         }]
-    }, {
+    },
+      {
         "id": "1115193",
         "name": "Household Essentials",
         "path": "Household Essentials",
@@ -7543,7 +7556,8 @@
             "name": "Pest Control",
             "path": "Household Essentials/Pest Control"
         }]
-    }, {
+    },
+      {
         "id": "3891",
         "name": "Jewelry",
         "path": "Jewelry",
@@ -7717,7 +7731,8 @@
                 "path": "Jewelry/Wedding & Engagement/Wedding Bands"
             }]
         }]
-    }, {
+    },
+      {
         "id": "4096",
         "name": "Movies & TV",
         "path": "Movies & TV",
@@ -8091,7 +8106,8 @@
             "name": "Walmart Exclusives",
             "path": "Movies & TV/Walmart Exclusives"
         }]
-    }, {
+    },
+      {
         "id": "4104",
         "name": "Music",
         "path": "Music",
@@ -8582,7 +8598,8 @@
             "name": "Zinepak",
             "path": "Music/Zinepak"
         }]
-    }, {
+    },
+      {
         "id": "1229749",
         "name": "Office",
         "path": "Office",
@@ -8942,7 +8959,8 @@
             "name": "Shipping & Mailroom",
             "path": "Office/Shipping & Mailroom"
         }]
-    }, {
+    },
+      {
         "id": "2637",
         "name": "Party & Occasions",
         "path": "Party & Occasions",
@@ -9246,7 +9264,8 @@
                 "path": "Party & Occasions/Wedding Shop/Wedding Accessories"
             }]
         }]
-    }, {
+    },
+      {
         "id": "5428",
         "name": "Patio & Garden",
         "path": "Patio & Garden",
@@ -9566,7 +9585,8 @@
                 "path": "Patio & Garden/Patio Furniture/Sectionals, Sofas & Loveseats"
             }]
         }]
-    }, {
+    },
+      {
         "id": "5440",
         "name": "Pets",
         "path": "Pets",
@@ -9804,7 +9824,8 @@
             "name": "Toys (Small Animals)",
             "path": "Pets/Toys (Small Animals)"
         }]
-    }, {
+    },
+      {
         "id": "5426",
         "name": "Photo Center",
         "path": "Photo Center",
@@ -9838,7 +9859,8 @@
                 "path": "Photo Center/Photo Products/Photo Products UNNAV"
             }]
         }]
-    }, {
+    },
+      {
         "id": "1085632",
         "name": "Seasonal",
         "path": "Seasonal",
@@ -10234,7 +10256,8 @@
                 "path": "Seasonal/WWE/WWE Movies"
             }]
         }]
-    }, {
+    },
+      {
         "id": "4125",
         "name": "Sports & Outdoors",
         "path": "Sports & Outdoors",
@@ -10583,7 +10606,8 @@
                 "path": "Sports & Outdoors/Team Sports/Volleyball"
             }]
         }]
-    }, {
+    },
+      {
         "id": "4171",
         "name": "Toys",
         "path": "Toys",
@@ -11110,7 +11134,8 @@
             "name": "Toy Organizers",
             "path": "Toys/Toy Organizers"
         }]
-    }, {
+    },
+      {
         "id": "2636",
         "name": "Video Games",
         "path": "Video Games",

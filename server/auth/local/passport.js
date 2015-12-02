@@ -18,6 +18,9 @@ exports.setup = function (User, config) {
         if (!user.authenticate(password)) {
           return done(null, false, { message: 'This password is not correct.' });
         }
+        if (!user.enabled) {
+          return done(null, false, { message: 'User is not yet enabled . Please contact admin @ rahul.shukla@synerzip.com to get your account enabled'});
+        }
         return done(null, user);
       });
     }

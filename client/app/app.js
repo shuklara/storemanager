@@ -51,6 +51,7 @@ angular.module('productsSelectionApp', [
         if (next.authenticate && !loggedIn) {
           event.preventDefault();
           $location.path('/login');
+          console.log($location.path());
         }
       });
     });
