@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('productsSelectionApp')
-  .controller('StoreCtrl', function ($scope, $http, socket, $filter, $uibModal, $stateParams) {
+  .controller('StoreCtrl', function ($scope, $http, socket, $filter, $uibModal, $stateParams, $log) {
 
     $scope.loading = true;
 
@@ -15,8 +15,27 @@ angular.module('productsSelectionApp')
     });
 
     $scope.updateStore = function (store) {
-      $http.put('/api/stores/'+store._id, store);
+      $http.put('/api/stores/' + store._id, store);
     };
+    var open = function (products, nextPage) {
+      var modalInstance = $uibModal.open({
+        animation: $scope.animationsEnabled,
+        templateUrl: 'myModalContent.html',
+        controller: 'ModalInstanceCtrl',
+        size: 'lg',
+        resolve: {
+          items: function () {
+            return products;
+          },
+          nextUrl: function () {
+            return nextPage;
+          },
+          store: function () {
+            return $scope.store;
+          }
+        }
+      });
+
 
     $scope.getProducts = function (cat) {
       $scope.fetchingProduct = true;
@@ -25,12 +44,12 @@ angular.module('productsSelectionApp')
         if (!cat.products) {
           cat.products = result.items;
         } else {
-          cat.products.concat(result.items)
+          cat.products.concat(result.items);
         }
         open(result.items, result.nextPage);
         $scope.fetchingProduct = false;
 
-      })
+      });
     };
 
     $scope.deleteThing = function (parent, thing) {
@@ -51,32 +70,16 @@ angular.module('productsSelectionApp')
     });
 
     $scope.initCheckbox = function (item, parentItem) {
-      return item.selected = parentItem && parentItem.selected || item.selected || false;
+      item.selected = parentItem;
+      return parentItem.selected || item.selected || false;
     };
 
 
-    function open(products, nextPage) {
-      var modalInstance = $uibModal.open({
-        animation: $scope.animationsEnabled,
-        templateUrl: 'myModalContent.html',
-        controller: 'ModalInstanceCtrl',
-        size: 'lg',
-        resolve: {
-          items: function () {
-            return products;
-          },
-          nextUrl: function () {
-            return nextPage;
-          },
-          store : function(){
-            return $scope.store;
-          }
-        }
-      });
+
 
       modalInstance.result.then(function (selectedItems) {
         if (!$scope.store.products) {
-          $scope.store.products =[] ;
+          $scope.store.products = [];
         }
 
         for (var key in selectedItems) {
@@ -88,16 +91,10 @@ angular.module('productsSelectionApp')
         $log.info('Modal dismissed at: ' + new Date());
       });
     };
-    return $scope.$on('changeParent', function (event, parentScope) {
-    });
+  });
 
 
-  }
-)
-;
-
-
-angular.module('productsSelectionApp').controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, items, nextUrl,store) {
+angular.module('productsSelectionApp').controller('ModalInstanceCtrl', function ($http, $scope, $uibModalInstance, items, nextUrl) {
   $scope.nextUrl = nextUrl;
   var itemsArray = [];
   $scope.items = items;
@@ -113,7 +110,7 @@ angular.module('productsSelectionApp').controller('ModalInstanceCtrl', function 
         $scope.items = result.items;
         itemsArray.push($scope.items);
         $scope.nextUrl = result.nextPage;
-      })
+      });
     }
 
 

@@ -18,6 +18,6 @@ angular.module('productsSelectionApp')
     $scope.enable = function (user) {
       $http.put('/api/users/' + user._id + '/enable', user).success(function (u) {
         user.enabled = u.enabled;
-      })
-    }
+      });
+    };
   });
