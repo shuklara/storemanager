@@ -7,16 +7,18 @@
 
 var User = require('../api/user/user.model');
 
-User.find({email: "rahul.shukla@synerzip.com"}).remove(function () {
-  User.create({
-      provider: 'local',
-      role: 'admin',
-      name: 'Rahul Shukla',
-      email: 'rahul.shukla@synerzip.com',
-      enabled: true,
-      password: process.env.adminPassword
-    }, function () {
-      console.log('finished populating users');
-    }
-  );
+User.findOne({email: "rahul.shukla@synerzip.com"},function (err,user) {
+  if(!user){
+    User.create({
+        provider: 'local',
+        role: 'admin',
+        name: 'Rahul Shukla',
+        email: 'rahul.shukla@synerzip.com',
+        enabled: true,
+        password: process.env.adminPassword || 'admin'
+      }, function () {
+        console.log('finished populating users');
+      }
+    );
+  }
 });

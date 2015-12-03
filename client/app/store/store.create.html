@@ -24,24 +24,25 @@
           <th>Products</th>
         </tr>
         </thead>
-        <tbody ng-class="{opened: item.opened}" ng-include="'table_tree.html'" ng-repeat="item in awesomeThings">
+        <tbody ng-class="{opened: item.opened}" ng-include="'table_tree.html'" ng-repeat="item in categories">
         </tbody>
       </table>
 
       <script id="table_tree.html" type="text/ng-template">
-        <tr ng-class="{parent: item.children}"
-            ng-init="parentScope = $parent.$parent; initCheckbox(item, parentScope.item)">
-          <td class="cell-name" ng-click="item.opened = !item.opened">
-            <div class="indent" style="padding-left: {{15*level+'px'}}">
+        <tr ng-class="{parent:!item.children||item.children.length>0}"
+            ng-init="parentScope = $parent.$parent;">
+          <td class="cell-name" ng-click="getChildren(item)">
+            <div class="indent" style="padding-left: {{25*level+'px'}}">
             </div>
             {{item.name}}
           </td>
-          <td class="cell-members">{{item.children.length}}</td>
+          <td class="cell-members">
+            <p ng-show="item.children.length>0">
+              {{item.children.length}}
+            </p>
+          </td>
           <td>
-            <a ng-show="!item.children && !fetchingProduct" ng-click="getProducts(item)" class="btn btn-link">Add
-              Products</a>
-            <a ng-show="!item.children && !!fetchingProduct" ng-click="getProducts(item)" class="btn btn-link">Loading...
-              <i class="fa fa-refresh fa-spin"></i></a>
+            <a ng-click="open(item)" class="btn btn-link"><i class="fa fa-plus"> Add</i></a>
           </td>
 
         </tr>
@@ -63,15 +64,16 @@
         <table style="width:100%">
           <tbody>
           <th style="width:70%">
-            <h3 class="modal-title">Products</h3>
+            <h3 class="modal-title">Products <i ng-show="!!fetchingProduct" class="fa fa-refresh fa-spin"></i></h3>
+
           </th>
           <th>
-            <h3 ng-show="!!nextUrl">
+            <h3 ng-show="hasPrevious()">
               <button ng-click="previous()" class="btn btn-link">Previous</button>
             </h3>
           </th>
           <th>
-            <h3 ng-show="!!nextUrl">
+            <h3 ng-show="hasNext()">
               <button ng-click="next()" class="btn btn-link">Next</button>
             </h3>
           </th>

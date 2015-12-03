@@ -12,98 +12,43 @@
 var _ = require('lodash');
 var http = require('http');
 var Thing = require('./thing.model');
-
-exports.load = function (req, res) {
-  http.get({
-    host: 'api.walmartlabs.com',
-    path: '/v1/paginated/items?format=json&category=' + req.params.id + '&apiKey=2m8deby4zfjte77t73e44r2v'
-  }, function (response) {
-    // Continuously update stream with data
-    var body = '';
-    response.on('data', function (d) {
-      body += d;
-    });
-    response.on('end', function () {
-
-      // Data reception is done, do whatever with it!
-      var parsed = JSON.parse(body);
-      return res.json(parsed)
-    });
-  });
-
-
-}
+var urlResolver = require('url');
 
 // Get list of things
 exports.index = function (req, res) {
-  Thing.find(function (err, things) {
-    if (err) {
-      return handleError(res, err);
-    }
-    return res.status(200).json(things);
-  });
-};
-
-// Get a single thing
-exports.show = function (req, res) {
-  Thing.findById(req.params.id, function (err, thing) {
-    if (err) {
-      return handleError(res, err);
-    }
-    if (!thing) {
-      return res.status(404).send('Not Found');
-    }
-    return res.json(thing);
-  });
-};
-
-// Creates a new thing in the DB.
-exports.create = function (req, res) {
-  Thing.create(req.body, function (err, thing) {
-    if (err) {
-      return handleError(res, err);
-    }
-    return res.status(201).json(thing);
-  });
-};
-
-// Updates an existing thing in the DB.
-exports.update = function (req, res) {
-  if (req.body._id) {
-    delete req.body._id;
+  var url = '/v1/paginated/items?apiKey=2m8deby4zfjte77t73e44r2v&format=json&category=' + req.params.id;
+  if (!!req.query.maxId) {
+    url = url + '&maxId=' + req.query.maxId;
   }
-  Thing.findById(req.params.id, function (err, thing) {
-    if (err) {
-      return handleError(res, err);
-    }
-    if (!thing) {
-      return res.status(404).send('Not Found');
-    }
-    var updated = _.merge(thing, req.body);
-    updated.save(function (err) {
-      if (err) {
-        return handleError(res, err);
-      }
-      return res.status(200).json(thing);
-    });
-  });
-};
 
-// Deletes a thing from the DB.
-exports.destroy = function (req, res) {
-  Thing.findById(req.params.id, function (err, thing) {
-    if (err) {
-      return handleError(res, err);
+  var request = require("request");
+  request("http://api.walmartlabs.com" + url, function (error, response, body) {
+    // Data reception is done, do whatever with it!
+    var parsed = JSON.parse(body);
+    body = '';
+    var result = {"category": parsed.category, items: []};
+
+    if (!!parsed.nextPage) {
+      var queryData = urlResolver.parse(parsed.nextPage, true).query;
+      result.maxId = queryData.maxId;
+
+      parsed.items.forEach(function (p) {
+        result.items.push({
+          itemId: p.itemId,
+          name: p.name,
+          salePrice: p.salePrice,
+          upc: p.upc,
+          categoryPath: p.categoryPath,
+          shortDescription: p.shortDescription,
+          brandName: p.brandName,
+          thumbnailImage: p.thumbnailImage,
+          modelNumber: p.modelNumber,
+          productUrl: p.productUrl,
+          categoryNode: p.categoryNode
+        });
+      })
     }
-    if (!thing) {
-      return res.status(404).send('Not Found');
-    }
-    thing.remove(function (err) {
-      if (err) {
-        return handleError(res, err);
-      }
-      return res.status(204).send('No Content');
-    });
+    return res.status(200).json(result);
   });
 };
 

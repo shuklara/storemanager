@@ -8,74 +8,30 @@ angular.module('productsSelectionApp')
     $http.get('/api/stores/' + $stateParams.id).success(function (store) {
       $scope.store = store;
     });
-    $scope.awesomeThings = [];
-    $http.get('/assets/categories.json').success(function (awesomeThings) {
-      $scope.awesomeThings = awesomeThings.categories;
+    $scope.categories = [];
+    $http.get('/api/categories').success(function (result) {
+      $scope.categories = result;
       $scope.loading = false;
     });
 
     $scope.updateStore = function (store) {
       $http.put('/api/stores/' + store._id, store);
     };
-    var open = function (products, nextPage) {
+    $scope.open = function (cat) {
       var modalInstance = $uibModal.open({
         animation: $scope.animationsEnabled,
         templateUrl: 'myModalContent.html',
         controller: 'ModalInstanceCtrl',
         size: 'lg',
         resolve: {
-          items: function () {
-            return products;
-          },
-          nextUrl: function () {
-            return nextPage;
+          category: function () {
+            return cat;
           },
           store: function () {
             return $scope.store;
           }
         }
       });
-
-
-    $scope.getProducts = function (cat) {
-      $scope.fetchingProduct = true;
-      var url = 'api/things/products/' + cat.id;
-      $http.get(url).success(function (result) {
-        if (!cat.products) {
-          cat.products = result.items;
-        } else {
-          cat.products.concat(result.items);
-        }
-        open(result.items, result.nextPage);
-        $scope.fetchingProduct = false;
-
-      });
-    };
-
-    $scope.deleteThing = function (parent, thing) {
-      var arr = [];
-      if (!parent) {
-        arr = $scope.awesomeThings;
-      }
-      else {
-        arr = parent.children;
-      }
-      var index = arr.indexOf(thing);
-      arr.splice(index, 1);
-      //  $http.delete('/api/things/' + thing._id);
-    };
-
-    $scope.$on('$destroy', function () {
-      socket.unsyncUpdates('thing');
-    });
-
-    $scope.initCheckbox = function (item, parentItem) {
-      item.selected = parentItem;
-      return parentItem.selected || item.selected || false;
-    };
-
-
-
 
       modalInstance.result.then(function (selectedItems) {
         if (!$scope.store.products) {
@@ -91,40 +47,52 @@ angular.module('productsSelectionApp')
         $log.info('Modal dismissed at: ' + new Date());
       });
     };
+    $scope.getChildren = function (cat) {
+      cat.opened = !cat.opened;
+      if (!!cat.opened) {
+        $http.get('/api/categories/children/' + cat._id).success(function (result) {
+          cat.children = result;
+        });
+      }
+    };
+
   });
 
 
-angular.module('productsSelectionApp').controller('ModalInstanceCtrl', function ($http, $scope, $uibModalInstance, items, nextUrl) {
-  $scope.nextUrl = nextUrl;
-  var itemsArray = [];
-  $scope.items = items;
-  itemsArray.push($scope.items);
+angular.module('productsSelectionApp').controller('ModalInstanceCtrl', function ($http, $scope, $uibModalInstance, category, store) {
   $scope.selectedProducts = {};
-  $scope.loadMore = function () {
-    var currIndex = itemsArray.indexOf($scope.items);
-    if (currIndex < itemsArray.length - 1) {
-      $scope.items = itemsArray[currIndex + 1];
-    } else {
-      var url = 'api/things/load/' + nextUrl;
-      $http.get(url).success(function (result) {
-        $scope.items = result.items;
-        itemsArray.push($scope.items);
-        $scope.nextUrl = result.nextPage;
-      });
-    }
+  var itemsArray = [];
+  var maxId;
+  var currIndex = 0;
 
-
-  };
-  $scope.ok = function () {
-    $uibModalInstance.close($scope.selectedProducts);
-  };
-
-  $scope.cancel = function () {
-    $uibModalInstance.dismiss('cancel');
-  };
-
+  store.products.forEach(function (product) {
+    $scope.selectedProducts[product.upc] = product;
+  });
 
   $scope.addProduct = function (p) {
+    delete p.parentItemId;
+    delete p.mediumImage;
+    delete p.largeImage;
+    delete p.productTrackingUrl;
+    delete p.standardShipRate;
+    delete p.marketplace;
+    delete p.bundle;
+    delete p.clearance;
+    delete p.preOrder;
+    delete p.stock;
+    delete p.addToCartUrl;
+    delete p.affiliateAddToCartUrl;
+    delete p.freeShippingOver50Dollars;
+    delete p.availableOnline;
+    delete p.longDescription;
+    delete p.ninetySevenCentShipping;
+    delete p.twoThreeDayShippingRate;
+    delete p.overnightShippingRate;
+    delete p.shipToStore;
+    delete p.freeShipToStore;
+    delete p.rollBack;
+    delete p.maxItemsInOrder;
+    delete p.variants;
     $scope.selectedProducts[p.upc] = p;
   };
   $scope.removeProduct = function (p) {
@@ -133,4 +101,51 @@ angular.module('productsSelectionApp').controller('ModalInstanceCtrl', function 
   $scope.isProductAdded = function (p) {
     return $scope.selectedProducts[p.upc];
   };
+
+  function getProducts(cat, max) {
+    $scope.fetchingProduct = true;
+    var url = '/api/products/' + cat.catId;
+    $http.get(url,{params:{maxId:max}}).success(function (result) {
+      maxId = result.maxId;
+      $scope.items = result.items;
+      itemsArray.push($scope.items);
+      currIndex = itemsArray.length - 1;
+      $scope.fetchingProduct = false;
+
+    });
+  }
+
+  $scope.next = function () {
+    if (currIndex + 1 < itemsArray.length) {
+      currIndex = currIndex + 1;
+      $scope.items = itemsArray[currIndex];
+    } else {
+      getProducts(category, maxId);
+    }
+  };
+
+  $scope.previous = function () {
+    if (currIndex > 0) {
+      currIndex = currIndex - 1;
+      $scope.items = itemsArray[currIndex];
+    }
+  };
+
+
+  $scope.ok = function () {
+    $uibModalInstance.close($scope.selectedProducts);
+  };
+
+  $scope.cancel = function () {
+    $uibModalInstance.dismiss('cancel');
+  };
+
+  $scope.hasPrevious = function(){
+    return currIndex !== 0;
+  };
+  $scope.hasNext = function(){
+    return currIndex < itemsArray.length-1 || !!maxId;
+  };
+  getProducts(category);
+
 });
