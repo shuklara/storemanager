@@ -2,9 +2,7 @@
 
 angular.module('productsSelectionApp')
   .controller('StoreCtrl', function ($scope, $http, socket, $filter, $uibModal, $stateParams, $log) {
-
     $scope.loading = true;
-
     $http.get('/api/stores/' + $stateParams.id).success(function (store) {
       $scope.store = store;
     });
@@ -58,12 +56,14 @@ angular.module('productsSelectionApp')
 
   });
 
-
-angular.module('productsSelectionApp').controller('ModalInstanceCtrl', function ($http, $scope, $uibModalInstance, category, store) {
+angular.module('productsSelectionApp').controller('ModalInstanceCtrl', ['$http', '$scope', '$uibModalInstance', 'category', 'store', function ($http, $scope, $uibModalInstance, category, store) {
   $scope.selectedProducts = {};
   var itemsArray = [];
   var maxId;
   var currIndex = 0;
+  if(!store.products){
+    store.products=[];
+  }
 
   store.products.forEach(function (product) {
     $scope.selectedProducts[product.upc] = product;
@@ -105,7 +105,7 @@ angular.module('productsSelectionApp').controller('ModalInstanceCtrl', function 
   function getProducts(cat, max) {
     $scope.fetchingProduct = true;
     var url = '/api/products/' + cat.catId;
-    $http.get(url,{params:{maxId:max}}).success(function (result) {
+    $http.get(url, {params: {maxId: max}}).success(function (result) {
       maxId = result.maxId;
       $scope.items = result.items;
       itemsArray.push($scope.items);
@@ -140,12 +140,12 @@ angular.module('productsSelectionApp').controller('ModalInstanceCtrl', function 
     $uibModalInstance.dismiss('cancel');
   };
 
-  $scope.hasPrevious = function(){
+  $scope.hasPrevious = function () {
     return currIndex !== 0;
   };
-  $scope.hasNext = function(){
-    return currIndex < itemsArray.length-1 || !!maxId;
+  $scope.hasNext = function () {
+    return currIndex < itemsArray.length - 1 || !!maxId;
   };
   getProducts(category);
 
-});
+}]);
