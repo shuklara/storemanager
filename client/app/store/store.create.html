@@ -1,20 +1,27 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
-<div class="container" ng-show="!!loading">
+<div class="container">
   <div class="row">
-    <div class="col-lg-12 text-center">
-      Loading Categories......... <i class="fa fa-refresh fa-spin"></i>
+    <div class="col-md-6 text-left">
+      <h1><a href="/api/stores/{{store._id}}" target="_blank"> <i class="fa fa-download"></i>
+        {{store.name}}
+      </a></h1>
+    </div>
+    <div class="col-md-6 text-right">
+      <div ng-show="!loading">
+        <button ng-show="!addProducts" ng-click="loadCategories()" class="btn btn-success"><i class="fa fa-plus"></i>
+          Add
+          Products
+        </button>
+        <button ng-show="!!addProducts" ng-click="addProducts=!addProducts" class="btn btn-danger"><i
+          class="fa fa-minus"></i> Add
+          Products
+        </button>
+      </div>
+      <span ng-show="!!loading">Loading Categories......... <i class="fa fa-refresh fa-spin"></i></span>
     </div>
   </div>
-</div>
-
-<div class="container" ng-show="!loading">
-  <div>
-    <h1><a href="http://localhost:9000/api/stores/{{store._id}}" target="_blank"> <i class="fa fa-download"></i>
-      {{store.name}}
-    </a></h1>
-  </div>
-  <div class="row">
+  <div ng-show="!!addProducts" class="row">
     <div class="col-lg-12">
       <table class="table-nested">
         <thead>
@@ -57,70 +64,287 @@
       </script>
     </div>
   </div>
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table table-bordered table-striped">
+        <tr ng-repeat="(cat,category) in store.categories">
+          <td>
+            <table class="table table-bordered">
+              <tr style="background-color:black; color:white;">
+                <td>
+                  {{category.node}}
+                </td>
+                <td>{{category.path}}</td>
+                <td><input type="number" style="color: black;" ng-model="category.weight" placeholder="Sales weight">
+                </td>
+              </tr>
+              <tr ng-repeat="(key,item) in category.products">
+                <td>
+                  <div>
+                    <a href="{{item.productUrl}}" target="_blank">
+                      <img src="{{item.thumbnailImage}}">
+                    </a>
 
-  <div>
-    <script type="text/ng-template" id="myModalContent.html">
-      <div class="modal-header">
-        <table style="width:100%">
-          <tbody>
-          <th style="width:70%">
-            <h3 class="modal-title">Products <i ng-show="!!fetchingProduct" class="fa fa-refresh fa-spin"></i></h3>
-
-          </th>
-          <th>
-            <h3 ng-show="hasPrevious()">
-              <button ng-click="previous()" class="btn btn-link">Previous</button>
-            </h3>
-          </th>
-          <th>
-            <h3 ng-show="hasNext()">
-              <button ng-click="next()" class="btn btn-link">Next</button>
-            </h3>
-          </th>
-          </tbody>
-        </table>
-
-
-      </div>
-      <div class="modal-body">
-        <table class="table table-striped table-bordered">
-          <tbody>
-          <tr ng-repeat="item in items">
-            <td style="width: 20%">
-              <div>
-                <a href="{{item.productUrl}}" target="_blank">
-                  <img src="{{item.thumbnailImage}}">
-                </a>
-
-                <p>SKU : {{item.upc}}</p>
-              </div>
-            </td>
-            <td>
-              <a target="_blank"
-                 href="http://api.walmartlabs.com/v1/items/{{item.itemId}}?format=json&apiKey=2m8deby4zfjte77t73e44r2v">
-                <p>{{item.name}}</p>
-              </a>
-            </td>
-            <!--<td style="width: 50%"></td>-->
-            <td>
-              <json-formatter open="0" json="item"></json-formatter>
-            </td>
-            <td style="width: 7%" class="text-center">
-              <button ng-show="!isProductAdded(item)" class="btn btn-success" ng-click="addProduct(item)"><i
-                class="fa fa-plus-square"></i></button>
-              <button ng-show="!!isProductAdded(item)" class="btn btn-danger" ng-click="removeProduct(item)"><i
-                class="fa fa-minus-square"></i></button>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
-        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
-      </div>
-    </script>
+                    <p>SKU : {{item.upc}}</p>
+                    <a target="_blank"
+                       href="http://api.walmartlabs.com/v1/items/{{item.itemId}}?format=json&apiKey=2m8deby4zfjte77t73e44r2v">
+                      <p>{{item.name}}</p>
+                    </a>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <ul class="nav nav-tabs" >
+                    <li role="presentation" ng-click="active='WEIGHT'" ng-class="{'active':active==='WEIGHT'}"><a href="#">Weight</a></li>
+                    <li role="presentation" ng-click="active='FWOS'" ng-class="{'active':active==='FWOS'}"><a href="#">FWOS</a></li>
+                    <li role="presentation" ng-click="active='SOH'" ng-class="{'active':active==='SOH'}"><a href="#">SOH</a></li>
+                  </ul>
+                  <table class="table" ng-show="active==='WEIGHT'">
+                    <tr>
+                      <td>
+                        <input type="number" ng-model="item.weight">
+                      </td>
+                    </tr>
+                  </table>
+                  <table class="table" ng-show="active==='FWOS'">
+                    <tr>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="1"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="2"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="3"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="4"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="5"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="6"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="7"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="8"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="9"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="10"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="11"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="12"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="13"/>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="1"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="2"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="3"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="4"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="5"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="6"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="7"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="8"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="9"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="10"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="11"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="12"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="13"/>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="1"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="2"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="3"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="4"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="5"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="6"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="7"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="8"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="9"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="10"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="11"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="12"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="13"/>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="1"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="2"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="3"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="4"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="5"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="6"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="7"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="8"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="9"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="10"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="11"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="12"/>
+                      </td>
+                      <td>
+                        <input type="text" style="width: 50px" placeholder="13"/>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </div>
   </div>
+</div>
+
+
+<div>
+  <script type="text/ng-template" id="myModalContent.html">
+    <div class="modal-header">
+      <table style="width:100%">
+        <tbody>
+        <th style="width:70%">
+          <h3 class="modal-title">Products <i ng-show="!!fetchingProduct" class="fa fa-refresh fa-spin"></i></h3>
+
+        </th>
+        <th>
+          <h3 ng-show="hasPrevious()">
+            <button ng-click="previous()" class="btn btn-link">Previous</button>
+          </h3>
+        </th>
+        <th>
+          <h3 ng-show="hasNext()">
+            <button ng-click="next()" class="btn btn-link">Next</button>
+          </h3>
+        </th>
+        </tbody>
+      </table>
+
+
+    </div>
+    <div class="modal-body">
+      <table class="table table-striped table-bordered">
+        <tbody>
+        <tr ng-repeat="item in items">
+          <td style="width: 20%">
+            <div>
+              <a href="{{item.productUrl}}" target="_blank">
+                <img src="{{item.thumbnailImage}}">
+              </a>
+
+              <p>SKU : {{item.upc}}</p>
+            </div>
+          </td>
+          <td>
+            <a target="_blank"
+               href="http://api.walmartlabs.com/v1/items/{{item.itemId}}?format=json&apiKey=2m8deby4zfjte77t73e44r2v">
+              <p>{{item.name}}</p>
+            </a>
+          </td>
+          <!--<td style="width: 50%"></td>-->
+          <td>
+            <json-formatter open="0" json="item"></json-formatter>
+          </td>
+          <td style="width: 7%" class="text-center">
+            <button ng-show="!isProductAdded(item)" class="btn btn-success" ng-click="addProduct(item)"><i
+              class="fa fa-plus-square"></i></button>
+            <button ng-show="!!isProductAdded(item)" class="btn btn-danger" ng-click="removeProduct(item)"><i
+              class="fa fa-minus-square"></i></button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+      <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+  </script>
+</div>
 
 </div>
 

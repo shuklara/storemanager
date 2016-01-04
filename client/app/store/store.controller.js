@@ -2,15 +2,27 @@
 
 angular.module('productsSelectionApp')
   .controller('StoreCtrl', function ($scope, $http, socket, $filter, $uibModal, $stateParams, $log) {
-    $scope.loading = true;
+
     $http.get('/api/stores/' + $stateParams.id).success(function (store) {
       $scope.store = store;
     });
+    $scope.active='WEIGHT';
+
     $scope.categories = [];
-    $http.get('/api/categories').success(function (result) {
-      $scope.categories = result;
-      $scope.loading = false;
-    });
+    $scope.loadCategories = function () {
+      $scope.loading = true;
+      if ($scope.categories.length == 0) {
+        $http.get('/api/categories').success(function (result) {
+          $scope.addProducts = true;
+          $scope.categories = result;
+          $scope.loading = false;
+        });
+      } else {
+        $scope.addProducts = true;
+        $scope.loading = false;
+      }
+    };
+
 
     $scope.updateStore = function (store) {
       $http.put('/api/stores/' + store._id, store);
@@ -32,12 +44,20 @@ angular.module('productsSelectionApp')
       });
 
       modalInstance.result.then(function (selectedItems) {
-        if (!$scope.store.products) {
-          $scope.store.products = [];
+        if (!$scope.store.categories) {
+          $scope.store.categories = {}
         }
 
         for (var key in selectedItems) {
-          $scope.store.products.push(selectedItems[key]);
+          var cat = selectedItems[key].categoryNode;
+          if (!$scope.store.categories[cat]) {
+            $scope.store.categories[cat] = {
+              node: cat,
+              path: selectedItems[key].categoryPath,
+              products: {}
+            };
+          }
+          $scope.store.categories[cat].products[key] = selectedItems[key]
         }
         $scope.updateStore($scope.store);
 
@@ -61,13 +81,6 @@ angular.module('productsSelectionApp').controller('ModalInstanceCtrl', ['$http',
   var itemsArray = [];
   var maxId;
   var currIndex = 0;
-  if(!store.products){
-    store.products=[];
-  }
-
-  store.products.forEach(function (product) {
-    $scope.selectedProducts[product.upc] = product;
-  });
 
   $scope.addProduct = function (p) {
     delete p.parentItemId;

@@ -5,8 +5,11 @@ var mongoose = require('mongoose'),
 
 var StoreSchema = new Schema({
   name: String,
-  products: Object,
-  categories: Object
+  minTranSize: {type: Number, default: 10},
+  maxTranSize: {type: Number, default: 500},
+  freq: {type: [Number], default: [2, 2, 2, 2, 2, 2, 2]},
+  anonymousCustomer: {type: Number, default: 20},
+  categories: {type: Object, default: {}}
 });
 
 module.exports = mongoose.model('Store', StoreSchema);
