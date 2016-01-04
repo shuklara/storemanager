@@ -2,12 +2,19 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-md-6 text-left">
-      <h1><a href="/api/stores/{{store._id}}" target="_blank"> <i class="fa fa-download"></i>
+
+    <div style="font-size: large ; margin-bottom: 10px" class="col-md-2">
+      <a href="/api/stores/{{store._id}}" target="_blank"> <i class="fa fa-download"></i>
         {{store.name}}
-      </a></h1>
+      </a>
     </div>
-    <div class="col-md-6 text-right">
+    <div class="col-md-2">
+      <button class="btn btn-success" ng-click="updateStore(store)">
+        <i class="fa fa-save"></i> Save
+      </button>
+    </div>
+    <div class="col-md-6"></div>
+    <div class="col-md-2 ">
       <div ng-show="!loading">
         <button ng-show="!addProducts" ng-click="loadCategories()" class="btn btn-success"><i class="fa fa-plus"></i>
           Add
@@ -93,10 +100,13 @@
                   </div>
                 </td>
                 <td colspan="2">
-                  <ul class="nav nav-tabs" >
-                    <li role="presentation" ng-click="active='WEIGHT'" ng-class="{'active':active==='WEIGHT'}"><a href="#">Weight</a></li>
-                    <li role="presentation" ng-click="active='FWOS'" ng-class="{'active':active==='FWOS'}"><a href="#">FWOS</a></li>
-                    <li role="presentation" ng-click="active='SOH'" ng-class="{'active':active==='SOH'}"><a href="#">SOH</a></li>
+                  <ul class="nav nav-tabs">
+                    <li role="presentation" ng-click="active='WEIGHT'" ng-class="{'active':active==='WEIGHT'}"><a
+                      href="#">Weight</a></li>
+                    <li role="presentation" ng-click="active='FWOS'" ng-class="{'active':active==='FWOS'}"><a href="#">FWOS</a>
+                    </li>
+                    <li role="presentation" ng-click="active='SOH'" ng-class="{'active':active==='SOH'}"><a
+                      href="#">SOH</a></li>
                   </ul>
                   <table class="table" ng-show="active==='WEIGHT'">
                     <tr>
