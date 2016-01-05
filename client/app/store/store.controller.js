@@ -1,12 +1,20 @@
 'use strict';
 
 angular.module('productsSelectionApp')
-  .controller('StoreCtrl', function ($scope, $http, socket, $filter, $uibModal, $stateParams, $log) {
+  .controller('StoreCtrl', function ($scope, $http, socket, $filter, $uibModal, $stateParams, $log, $state) {
 
     $http.get('/api/stores/' + $stateParams.id).success(function (store) {
       $scope.store = store;
     });
-    $scope.active='WEIGHT';
+    $scope.active = 'WEIGHT';
+
+    $scope.copy = function (store) {
+      delete store._id;
+      store.name = 'COPY OF' + store.name;
+      $http.post('/api/stores', store).success(function (res) {
+        $state.go('store', {id: res._id});
+      });
+    };
 
     $scope.categories = [];
     $scope.loadCategories = function () {

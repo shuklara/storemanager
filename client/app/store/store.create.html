@@ -1,32 +1,27 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
-<div class="container">
-  <div class="row">
+<div class="navbar">
+  <div class="container">
+    <div class="navbar-header">
+      <a href="/api/stores/{{store._id}}" target="_blank" class="navbar-brand">{{store.name}}</a>
+    </div>
+    <div id="navbar-main">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="" ng-click="updateStore(store)"><i class="fa fa-save"></i>&nbsp;Save</a></li>
+        <li><a href="" ng-click="copy(store)"><i class="fa fa-copy"></i>&nbsp;Copy</a></li>
+        <li ng-show="!loading && !addProducts"><a href="" ng-click="loadCategories()"><i class="fa fa-plus"></i>&nbsp;
+          Add</a></li>
+        <li ng-show="!loading && addProducts"><a href="" ng-click="addProducts=!addProducts"><i class="fa fa-minus"></i>&nbsp;
+          Add</a></li>
+        <li ng-show="!!loading"><i class="fa fa-refresh fa-spin"></i> &nbsp;Loading...</li>
+      </ul>
+    </div>
+  </div>
+</div>
 
-    <div style="font-size: large ; margin-bottom: 10px" class="col-md-2">
-      <a href="/api/stores/{{store._id}}" target="_blank"> <i class="fa fa-download"></i>
-        {{store.name}}
-      </a>
-    </div>
-    <div class="col-md-2">
-      <button class="btn btn-success" ng-click="updateStore(store)">
-        <i class="fa fa-save"></i> Save
-      </button>
-    </div>
-    <div class="col-md-6"></div>
-    <div class="col-md-2 ">
-      <div ng-show="!loading">
-        <button ng-show="!addProducts" ng-click="loadCategories()" class="btn btn-success"><i class="fa fa-plus"></i>
-          Add
-          Products
-        </button>
-        <button ng-show="!!addProducts" ng-click="addProducts=!addProducts" class="btn btn-danger"><i
-          class="fa fa-minus"></i> Add
-          Products
-        </button>
-      </div>
-      <span ng-show="!!loading">Loading Categories......... <i class="fa fa-refresh fa-spin"></i></span>
-    </div>
+<div class="container">
+  <div ng-show="!!addProducts" class="row">
+    <h3>Select Products To Add</h3>
   </div>
   <div ng-show="!!addProducts" class="row">
     <div class="col-lg-12">
@@ -70,6 +65,77 @@
         </tr>
       </script>
     </div>
+  </div>
+  <div class="row">
+    <h3>Store Attributes</h3>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table table-striped table-bordered">
+        <tr>
+          <td style="width:40%">
+            Name :
+          </td>
+          <td colspan="7">
+            <input ng-model="store.name">
+          </td>
+
+        </tr>
+        <tr>
+          <td>
+            Max Transcation Size ($):
+          </td>
+          <td colspan="7">
+            <input type="number" ng-model="store.maxTranSize">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Min Transcation Size ($):
+          </td>
+          <td colspan="7">
+            <input type="number" ng-model="store.minTranSize">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Annonymous Customer (%) :
+          </td>
+          <td colspan="7">
+            <input type="number" ng-model="store.anonymousCustomer">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Weekly Sale freq (tran/minute) :
+          </td>
+          <td>
+            S:<input type="number" style="width:50px" ng-model="store.freq[0]" placeholder="S">
+          </td>
+          <td>
+            M:<input type="number" style="width:50px" ng-model="store.freq[1]" placeholder="M">
+          </td>
+          <td>
+            T:<input type="number" style="width:50px" ng-model="store.freq[2]" placeholder="T">
+          </td>
+          <td>
+            W:<input type="number" style="width:50px" ng-model="store.freq[3]" placeholder="W">
+          </td>
+          <td>
+            T:<input type="number" style="width:50px" ng-model="store.freq[4]" placeholder="T">
+          </td>
+          <td>
+            F:<input type="number" style="width:50px" ng-model="store.freq[5]" placeholder="F">
+          </td>
+          <td>
+            S:<input type="number" style="width:50px" ng-model="store.freq[6]" placeholder="S">
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div class="row">
+    <h3>Products</h3>
   </div>
   <div class="row">
     <div class="col-md-12">
