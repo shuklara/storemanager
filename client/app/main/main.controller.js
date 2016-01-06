@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('productsSelectionApp')
-  .controller('MainCtrl', function ($scope, $http, socket,$state) {
+  .controller('MainCtrl', function ($scope, $http, socket,$state,Auth) {
     $scope.stores = [];
-
+    $scope.isAdmin = Auth.isAdmin;
     $http.get('/api/stores').success(function(stores) {
       $scope.stores = stores;
       socket.syncUpdates('store', $scope.stores);

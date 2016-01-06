@@ -3,8 +3,16 @@
 angular.module('productsSelectionApp')
   .controller('StoreCtrl', function ($scope, $http, socket, $filter, $uibModal, $stateParams, $log, $state) {
 
+
     $http.get('/api/stores/' + $stateParams.id).success(function (store) {
       $scope.store = store;
+      $scope.numCategories = _.size(store.categories)
+      $scope.numProducts = 0;
+      for (var ele in $scope.store.categories) {
+        if (!!$scope.store.categories[ele].products) {
+          $scope.numProducts += _.size($scope.store.categories[ele].products)
+        }
+      }
     });
     $scope.active = 'WEIGHT';
 
@@ -14,6 +22,14 @@ angular.module('productsSelectionApp')
       $http.post('/api/stores', store).success(function (res) {
         $state.go('store', {id: res._id});
       });
+    };
+
+    $scope.canShowCat = function (cat) {
+      return _.size(cat.products) > 0;
+    };
+
+    $scope.delete = function (cat, upc) {
+      delete $scope.store.categories[cat].products[upc];
     };
 
     $scope.categories = [];
@@ -68,6 +84,14 @@ angular.module('productsSelectionApp')
           $scope.store.categories[cat].products[key] = selectedItems[key]
         }
         $scope.updateStore($scope.store);
+
+        $scope.numCategories = _.size($scope.store.categories)
+        $scope.numProducts = 0;
+        for (var ele in $scope.store.categories) {
+          if (!!$scope.store.categories[ele].products) {
+            $scope.numProducts += _.size($scope.store.categories[ele].products)
+          }
+        }
 
       }, function () {
         $log.info('Modal dismissed at: ' + new Date());
@@ -125,7 +149,7 @@ angular.module('productsSelectionApp').controller('ModalInstanceCtrl', ['$http',
 
   function getProducts(cat, max) {
     $scope.fetchingProduct = true;
-    var url = '/api/products/' + cat.catId;
+    var url = '/api/products/' + cat;
     $http.get(url, {params: {maxId: max}}).success(function (result) {
       maxId = result.maxId;
       $scope.items = result.items;

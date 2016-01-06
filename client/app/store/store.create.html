@@ -51,7 +51,7 @@
             </p>
           </td>
           <td>
-            <a ng-click="open(item)" class="btn btn-link"><i class="fa fa-plus"> Add</i></a>
+            <a ng-click="open(item.catId)" class="btn btn-link"><i class="fa fa-plus"> Add</i></a>
           </td>
 
         </tr>
@@ -131,6 +131,22 @@
             S:<input type="number" style="width:50px" ng-model="store.freq[6]" placeholder="S">
           </td>
         </tr>
+        <tr>
+          <td>
+            Categories :
+          </td>
+          <td colspan="7">
+            {{numCategories}}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Products :
+          </td>
+          <td colspan="7">
+            {{numProducts}}
+          </td>
+        </tr>
       </table>
     </div>
   </div>
@@ -142,13 +158,17 @@
       <table class="table table-bordered table-striped">
         <tr ng-repeat="(cat,category) in store.categories">
           <td>
-            <table class="table table-bordered">
+            <table ng-show="canShowCat(category)" class="table table-bordered">
               <tr style="background-color:black; color:white;">
                 <td>
                   {{category.node}}
                 </td>
                 <td>{{category.path}}</td>
                 <td><input type="number" style="color: black;" ng-model="category.weight" placeholder="Sales weight">
+                </td>
+                <td style="width: 5%" class="text-center">
+                  <button type="button" class="btn btn-success" ng-click="open(cat)"><i class="fa fa-plus"></i>
+                  </button>
                 </td>
               </tr>
               <tr ng-repeat="(key,item) in category.products">
@@ -347,6 +367,10 @@
                       </td>
                     </tr>
                   </table>
+                </td>
+                <td style="width: 5%" class="text-center">
+                  <button type="button" class="btn btn-danger" ng-click="delete(cat,key)"><i class="fa fa-close"></i>
+                  </button>
                 </td>
               </tr>
             </table>
