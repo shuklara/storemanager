@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('productsSelectionApp')
-  .controller('AdminCtrl', function ($scope, $http, Auth, User) {
+  .controller('AdminCtrl', ['$scope', '$http', 'Auth', 'User', function ($scope, $http, Auth, User) {
 
     // Use the User $resource to fetch all users
     $scope.users = User.query();
@@ -20,4 +20,4 @@ angular.module('productsSelectionApp')
         user.enabled = u.enabled;
       });
     };
-  });
+  }]);

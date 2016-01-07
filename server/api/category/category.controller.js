@@ -16,13 +16,14 @@ Category.count(function (err, count) {
 
 function createNodes(parent, nodes) {
   nodes.forEach(function (node) {
-    var n = new Category({catId: node.id, name: node.name, path: node.path});
+    var n = new Category({catId: node.id, name: node.name, path: node.name});
     if (!!parent) {
-      n.parent = parent;
+      n.parent = parent._id;
+      n.path = parent.path + "/" + node.name;
     }
     n.save(function (err, result) {
       if (!!node.children) {
-        createNodes(result._id, node.children);
+        createNodes(result, node.children);
       }
     });
 

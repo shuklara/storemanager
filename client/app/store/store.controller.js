@@ -6,11 +6,11 @@ angular.module('productsSelectionApp')
 
     $http.get('/api/stores/' + $stateParams.id).success(function (store) {
       $scope.store = store;
-      $scope.numCategories = _.size(store.categories)
+      $scope.numCategories = _.size(store.categories);
       $scope.numProducts = 0;
       for (var ele in $scope.store.categories) {
         if (!!$scope.store.categories[ele].products) {
-          $scope.numProducts += _.size($scope.store.categories[ele].products)
+          $scope.numProducts += _.size($scope.store.categories[ele].products);
         }
       }
     });
