@@ -48,12 +48,14 @@ exports.update = function (req, res) {
     if (!store) {
       return res.status(404).send('Not Found');
     }
-    var updated =  req.body
+    var updated =  req.body;
     store.categories = updated.categories;
     store.freq=updated.freq;
     store.anonymousCustomer=updated.anonymousCustomer;
     store.minTranSize=updated.minTranSize;
     store.maxTranSize=updated.maxTranSize;
+    store.serviceability=updated.serviceability;
+    store.leadTime=updated.leadTime;
     store.name=updated.name;
     store.markModified('categories');
     store.markModified('freq');

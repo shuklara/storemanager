@@ -5,6 +5,8 @@ var mongoose = require('mongoose'),
 
 var StoreSchema = new Schema({
   name: String,
+  serviceability: {type: Number, default: 85},
+  leadTime: {type: Number, default: 3},
   minTranSize: {type: Number, default: 10},
   maxTranSize: {type: Number, default: 500},
   freq: {type: [Number], default: [2, 2, 2, 2, 2, 2, 2]},
